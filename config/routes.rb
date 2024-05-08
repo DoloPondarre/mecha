@@ -1,5 +1,15 @@
 Rails.application.routes.draw do
   devise_for :admins
+  namespace :admin do
+    resources :products
+  end
+  
+  resources :products, only: [:index, :show]
+  resource :cart, only: [:show, :create]
+  resources :orders, only: [:new, :create]
+
+  get 'orders/:id/whatsapp', to: 'orders#whatsapp', as: 'order_whatsapp'
+
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
