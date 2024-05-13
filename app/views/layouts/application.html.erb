@@ -1,16 +1,187 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Mecha</title>
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <%= csrf_meta_tags %>
-    <%= csp_meta_tag %>
+<head>
+  <title>Mecha</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <%= csrf_meta_tags %>
+  <%= csp_meta_tag %>
 
-    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
-    <%= javascript_importmap_tags %>
-  </head>
+  <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+  <%# <%= javascript_importmap_tags %>
+  <%= javascript_include_tag 'application' %>
+</head>
 
-  <body>
+<body>
+  <% if flash[:alert] %>
+    <div class="alert">
+      <%= flash[:alert] %>
+    </div>
+  <% end %>
+
+  <header>
+    <% if admin_signed_in? %>
+      <h1><a href="<%= admin_root_path %>">Mecha del Poncho</a></h1>
+      <h1><%= button_to "Log out", destroy_admin_session_path, method: :delete, class: "btn btn-dark" %></h1>
+    <% else %>
+      <h1><a href="<%= root_path %>">Mecha del Poncho</a></h1>
+
+      <% unless request.original_url.include?('admin') %>
+        <div id="cart">
+          <div class="container-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="icon-cart">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+            </svg>
+
+            <div class="count-products">
+              <span id="contador-productos"><%= count_cart_items %></span>
+            </div>
+
+            <div class="container-cart-products <%='hidden-cart' if current_cart_items.empty? %>" onclick="event.stopPropagation()">
+              <% current_cart_items.each do |cart_item| %>
+                <div class="cart-product" id="cart_product_<%= cart_item.product.id %>">
+                  <div class="info-cart-product">
+                    <span class="cantidad-producto-carrito">
+                      <div class="input-group">
+                        <input type="number" class="form-control" id="quantity_<%= cart_item.product.id %>" value="<%= cart_item.quantity %>" min="1" step="1" onchange="updateQuantity(<%= cart_item.product.id %>)">
+                      </div>
+                    </span>
+                    <p class="titulo-producto-carrito"><%= cart_item.product.name %></p>
+                    <span class="precio-producto-carrito"><%= number_to_currency(cart_item.product.price) %></span>
+                  </div>
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="icon-close" onclick="eliminarDelCarrito(<%= cart_item.product.id %>)" style="cursor: pointer;">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+                  </svg>
+                </div>
+              <% end %>
+
+              <div class="cart-total">
+                <h3>Total</h3>
+                <span class="total-pagar"><%= current_cart_total %></span>
+              </div>
+
+              <div class="button-order">
+                <%= button_to 'Realizar Pedido', new_order_path, method: :get, id: 'realizar-pedido-button' %>
+              </div>
+            </div>
+          </div>
+        </div>
+      <%end%>
+    <%end%>
+  </header>
+
+  <% if admin_signed_in? && !current_page?(admin_root_path) && !current_page?(admin_products_path) %>
+    <div class="d-flex align-items-center">
+        <%= link_to admin_products_path do %>
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" width="25" height="25" class="w-6 h-6 ms-4">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 15 3 9m0 0 6-6M3 9h12a6 6 0 0 1 0 12h-3" />
+          </svg>
+        <% end %>
+    </div> <br>
+  <% end %>
+
+  <div class="content">
     <%= yield %>
-  </body>
+  </div>
+
+  <% if !request.original_url.include?('admin') %>
+    <footer class="footer">
+      <div class="left-info">
+        <h4>Información de Contacto</h4>
+        <p>Correo electrónico: info@tuempresa.com</p>
+        <p>Teléfono: +123456789</p>
+      </div>
+      <div class="right-social">
+        <h4>Redes Sociales</h4>
+        <p>Facebook: <a href="#">facebook.com/tuempresa</a></p>
+        <p>Instagram: <a href="#">instagram.com/tuempresa</a></p>
+      </div>
+    </footer>
+  <% end %>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
+</body>
 </html>
+
+<!-- Scripts para el carrito -->
+<script>
+  function eliminarDelCarrito(cartItemId) {
+    fetch(`/cart_items/${cartItemId}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
+      }
+    }).then(response => {
+      if (response.ok) {
+        return response.json(); // Convertir la respuesta a JSON
+      } else {
+        throw new Error('Error al eliminar el elemento del carrito');
+      }
+    }).then(data => {
+      // Recargar la página
+      location.reload();
+    }).catch(error => {
+      console.error('Error al eliminar el elemento del carrito:', error);
+    });
+  }
+
+  function updateQuantity(cartItemId) {
+    var input = document.getElementById('quantity_' + cartItemId);
+    var value = parseInt(input.value);
+    if (value < 1) {
+      value = 1; // No permitir cantidades menores a 1
+    }
+
+    // Enviar solicitud AJAX al servidor para actualizar la cantidad
+    fetch(`/cart_items/${cartItemId}/update_quantity?quantity=${value}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
+      }
+    }).then(response => {
+      if (response.ok) {
+        return response.json(); // Convertir la respuesta a JSON
+      } else {
+        throw new Error('Error al actualizar la cantidad del cart_item');
+      }
+    }).then(data => {
+      // Actualizar el valor del input
+      input.value = value;
+      // Actualizar el contador de productos
+      var contadorProductos = document.getElementById('contador-productos');
+      contadorProductos.textContent = parseInt(contadorProductos.textContent) + (value - parseInt(input.getAttribute('value')));
+      // Actualizar el valor del atributo value del input
+      input.setAttribute('value', value);
+
+      // Actualizar el total del carrito
+      var totalPagar = document.querySelector('.total-pagar');
+      totalPagar.textContent = data.totalPagar;
+    }).catch(error => {
+      console.error('Error al actualizar la cantidad del cart_item:', error);
+    });
+  }
+
+  document.getElementById('realizar-pedido-button').addEventListener('click', function(event) {
+    if (<%= current_cart_items.any? %>) {
+      // Si hay productos en el carrito, permitir el envío del formulario
+      return true;
+    } else {
+      // Si no hay productos en el carrito, mostrar un mensaje de error
+      alert('Debe seleccionar un producto para realizar un pedido');
+      event.preventDefault(); // Evitar que se envíe el formulario
+      return false;
+    }
+  });
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const btnCart = document.querySelector('.container-icon');
+
+    btnCart.addEventListener('click', () => {
+      const containerCartProducts = document.querySelector('.container-cart-products');
+      containerCartProducts.classList.toggle('hidden-cart');
+    });
+  });
+</script>

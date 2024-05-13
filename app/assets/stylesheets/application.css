@@ -13,3 +13,179 @@
  *= require_tree .
  *= require_self
  */
+ @import "bootstrap";
+
+ @import "_cart";
+ @import "_header";
+ @import "_admin";
+ @import "_products";
+
+ * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: 'Lato';
+    color: #333;
+    max-width: 100%;
+    margin: 0 auto; /* Centra el contenido */
+    text-align: center; /* Centra el texto */
+    position: relative;
+    padding-bottom: 70px; /* Ajusta el margen inferior según la altura del footer */
+  }
+  
+  /* Añade esto para que el footer tenga un fondo gris completo */
+  html, body {
+    height: 100%;
+  }
+  
+  footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    height: 70px; /* Ajusta este valor según la altura de tu footer */
+    background-color: #e7afff;
+    color: white;
+    padding: 10px 20px;
+    font-size: 10px;
+    z-index: 999;
+  }
+  
+  .content {
+    padding-bottom: 100px; /* Suma de altura de footer + padding del footer */
+  }
+  
+  a {
+    text-decoration: none; /* Eliminar subrayado */
+    color: inherit; /* Utilizar el color del texto por defecto */
+  }
+  
+  img{
+    max-width: 100%;
+ }
+
+ .product-details {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .photos {
+    flex: 1;
+  }
+  
+  .photos img {
+    display: block;
+    width: 100%;
+    margin-bottom: 10px;
+  }
+  
+  .info {
+    flex: 1;
+    padding-left: 20px; /* Espacio entre las fotos y la información del producto */
+  }
+  
+  .info h2 {
+    margin-top: 0; /* Eliminar el margen superior del título */
+  }
+  
+  .info .price {
+    font-weight: bold;
+  }
+
+  .go-back-show svg {
+    width: 20px; /* Define el ancho deseado para la flecha */
+    height: 20px; /* Define la altura deseada para la flecha */
+    stroke: black; /* Cambia el color del trazo a negro */
+  }
+  
+  .go-back-show a {
+    color: black; /* Cambia el color del texto del enlace a negro */
+  }
+
+  .carousel-item img {
+    width: 100%;
+    height: 500px;
+    object-fit: cover;
+    border-radius: 10px;
+  }
+  
+  button {
+    border: none;
+    background: none;
+    background-color: #000;
+    color: #fff;
+    padding: 15px 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    border-radius: 10px;
+  }
+  
+  button:hover {
+    background-color: rgb(90, 90, 90);
+  }
+  
+  .carousel-item img {
+    width: 100%;
+    height: 500px;
+    object-fit: cover;
+    border-radius: 10px;
+  }
+  
+/* Estilo para el footer */
+.footer {
+    width: 100%;
+    background-color: #e7afff;
+    color: white;
+    position: fixed;
+    bottom: 0;
+    padding: 10px 10px;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0; /* Agregado para eliminar el margen */
+  }
+  
+  .footer .left-info,
+  .footer .right-social {
+    width: 50%;
+    text-align: center;
+    padding: 10px 0;
+  }
+  
+  .footer .left-info {
+    text-align: left;
+    /* padding-left: 20px; */
+  }
+  
+  .footer .right-social {
+    text-align: right;
+    /* padding-right: 20px; */
+  }
+  
+  .footer p {
+    margin: 0;
+    max-height: 50%;
+    font-size: 15px;
+  }
+  
+  .footer p a {
+    color: white;
+  }  
+
+  .footer h4{
+    margin: 0;
+    font-size: 15px;
+    font-weight: bold;
+  }
+  
+  .alert {
+    background-color: red;
+    color: white;
+    padding: 10px;
+    text-align: center;
+  }
+
+  

@@ -1,0 +1,65 @@
+<div class="form-container">
+  <%= form_with(model: [:admin, @product], url: @product.persisted? ? admin_product_path(@product) : admin_products_path, method: @product.persisted? ? :patch : :post, multipart: true) do |form| %>
+    <% if @product.errors.any? %>
+      <div id="error_explanation">
+        <h2><%= pluralize(@product.errors.count, "error") %> prohibited this product from being saved:</h2>
+
+        <ul>
+          <% @product.errors.full_messages.each do |message| %>
+            <li><%= message %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <div class="field">
+      <%= form.label :name %>
+      <%= form.text_field :name %>
+    </div>
+
+    <div class="field">
+      <%= form.label :price %>
+      <%= form.number_field :price %>
+    </div>
+
+    <div class="field">
+      <%= form.label :description %>
+      <%= form.text_area :description %>
+    </div>
+
+    <div class="field">
+      <%= form.label :color %>
+      <%= form.text_field :color %>
+    </div>
+
+    <div class="field">
+      <%= form.label :size %>
+      <%= form.text_field :size %>
+    </div>
+
+    <div class="field">
+      <%= form.label :available %>
+      <%= form.check_box :available %>
+    </div>
+
+    <div class="field">
+      <%= form.label :product_images, 'Add images (JPG, PNG)' %>
+      <%= form.file_field :images, multiple: true, accept: 'image/jpeg,image/png' %>
+    </div>
+
+    <% if @product.images.attached? %>
+      <div class="field">
+        <p>Current Images:</p>
+        <% @product.images.each do |image| %>
+          <%= image_tag(image, class: 'thumb') %>
+          <%= check_box_tag "product[remove_images][]", image.id %>
+          <%= label_tag "product_remove_images_#{image.id}", 'Remove' %><br>
+        <% end %>
+      </div>
+    <% end %><br>
+    
+    <div class="actions">
+      <%= form.submit %>
+    </div>
+  <% end %>
+</div>

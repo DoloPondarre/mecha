@@ -1,2 +1,87 @@
-<h1>Orders#new</h1>
-<p>Find me in app/views/orders/new.html.erb</p>
+<h1>New Order</h1>
+
+<%= form_with(model: @order, local: true) do |form| %>
+  <% if @order.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@order.errors.count, "error") %> prohibited this order from being saved:</h2>
+
+      <ul>
+        <% @order.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <%= form.fields_for :order_items do |item_form| %>
+    <%= item_form.hidden_field :product_id %>
+  <% end %>
+
+  <div class="field">
+    <%= form.label :nombre %>
+    <%= form.text_field :nombre %>
+  </div>
+
+  <div class="field">
+    <%= form.label :apellido %>
+    <%= form.text_field :apellido %>
+  </div>
+
+  <div class="field">
+    <%= form.label :telefono %>
+    <%= form.text_field :telefono %>
+  </div>
+
+  <div class="field">
+    <%= form.label :payment_method %>
+    <%= form.select :payment_method, Order.payment_methods.keys %>
+  </div>
+
+  <div id="shipping_fields">
+    <div class="field">
+      <%= form.label :direccion %>
+      <%= form.text_field :direccion %>
+    </div>
+
+    <div class="field">
+      <%= form.label :codigo_postal %>
+      <%= form.text_field :codigo_postal %>
+    </div>
+
+    <div class="field">
+      <%= form.label :ciudad %>
+      <%= form.text_field :ciudad %>
+    </div>
+
+    <div class="field">
+      <%= form.label :provincia %>
+      <%= form.text_field :provincia %>
+    </div>
+  </div>
+
+  <div class="field">
+    <%= form.label :shipping, 'Do you want shipping?' %>
+    <%= form.check_box :shipping, id: "shipping_checkbox" %>
+  </div>
+
+  <div class="actions">
+    <%= form.submit %>
+  </div>
+<% end %>
+
+<%= link_to 'Back', root_path %>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    var shippingCheckbox = document.getElementById('shipping_checkbox');
+    var shippingFields = document.getElementById('shipping_fields');
+
+    shippingCheckbox.addEventListener('change', function () {
+      if (this.checked) {
+        shippingFields.style.display = 'block';
+      } else {
+        shippingFields.style.display = 'none';
+      }
+    });
+  });
+</script>

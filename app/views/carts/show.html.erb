@@ -1,2 +1,9 @@
-<h1>Carts#show</h1>
-<p>Find me in app/views/carts/show.html.erb</p>
+<h1>Your Cart</h1>
+
+<% @cart.cart_items.each do |item| %>
+  <div>
+    <h2><%= link_to item.product.name, item.product %></h2>
+    <p><%= number_to_currency(item.product.price) %></p>
+    <%= link_to 'Remove', cart_item_path(item), method: :delete %>
+  </div>
+<% end %>

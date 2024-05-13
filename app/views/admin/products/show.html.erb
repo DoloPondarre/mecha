@@ -1,2 +1,37 @@
-<h1>Admin::Products#show</h1>
-<p>Find me in app/views/admin/products/show.html.erb</p>
+<div class="container">
+  <div class="row">
+    <div class="col-md-6">
+      <div id="carouselExample" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
+          <% @product.images.each_with_index do |image, index| %>
+            <div class="carousel-item <%= 'active' if index == 0 %>">
+              <%= image_tag url_for(image), class: 'd-block w-100', alt: 'Product Image' %>
+            </div>
+          <% end %>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Next</span>
+        </button>
+      </div>
+    </div>
+    <div class="col-md-6">
+        <div class="info-product d-flex flex-column justify-content-between" style="height: 100%;">
+            <div>
+              <h2><%= @product.name %></h2>
+              <h3><%= number_to_currency(@product.price) %></h3><br>
+              <p class="description"><strong>Descripcion: </strong><%= @product.description %></p>
+              <p class="color"><strong>Color: </strong><%= @product.color %></p>
+              <p class="size"><strong>Talle: </strong><%= @product.size %></p>
+            </div>
+            <div class="mt-auto">
+              <%= button_to 'Edit', edit_admin_product_path(@product), method: :get,  class: 'custom-button' %>
+            </div>
+        </div>
+    </div>
+  </div>
+</div>

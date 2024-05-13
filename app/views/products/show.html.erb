@@ -1,2 +1,10 @@
-<h1>Products#show</h1>
-<p>Find me in app/views/products/show.html.erb</p>
+<h1><%= @product.name %></h1>
+<p><%= number_to_currency(@product.price) %></p>
+<p><%= @product.description %></p>
+<p>Color: <%= @product.color %></p>
+<p>Size: <%= @product.size %></p>
+<p>Available: <%= @product.available ? 'Yes' : 'No' %></p>
+<% @product.product_images.each do |image| %>
+  <%= image_tag image.image.variant(resize_to_limit: [100, 100]) %>
+<% end %>
+<%= link_to 'Add to Cart', cart_path, method: :post %>

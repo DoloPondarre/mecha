@@ -1,8 +1,18 @@
 Rails.application.routes.draw do
-  devise_for :admins
+  
+  devise_for :admin
+
   namespace :admin do
-    resources :products
+    root to: "products#index"
+    resources :products do
+      member do
+        patch 'make_unavailable'
+        patch 'make_available'
+      end
+    end
   end
+
+  root to: 'home#index'
   
   resources :products, only: [:index, :show]
   resource :cart, only: [:show, :create]
