@@ -1,65 +1,86 @@
 <div class="form-container">
   <%= form_with(model: [:admin, @product], url: @product.persisted? ? admin_product_path(@product) : admin_products_path, method: @product.persisted? ? :patch : :post, multipart: true) do |form| %>
-    <% if @product.errors.any? %>
-      <div id="error_explanation">
-        <h2><%= pluralize(@product.errors.count, "error") %> prohibited this product from being saved:</h2>
-
-        <ul>
-          <% @product.errors.full_messages.each do |message| %>
-            <li><%= message %></li>
-          <% end %>
-        </ul>
-      </div>
-    <% end %>
 
     <div class="field">
       <%= form.label :name %>
-      <%= form.text_field :name %>
+      <%= form.text_field :name, class: @product.errors[:name].any? ? 'field_with_errors' : 'regular-field' %>
+      <span class="error"><%= @product.errors.full_messages_for(:name).first %></span>
     </div>
 
     <div class="field">
       <%= form.label :price %>
-      <%= form.number_field :price %>
+      <%= form.number_field :price, min: 1000, class: @product.errors[:price].any? ? 'field_with_errors' : 'regular-field' %>
+      <span class="error"><%= @product.errors.full_messages_for(:price).first %></span>
     </div>
 
     <div class="field">
       <%= form.label :description %>
-      <%= form.text_area :description %>
+      <%= form.text_area :description, class: @product.errors[:description].any? ? 'field_with_errors' : 'regular-field' %>
+      <span class="error"><%= @product.errors.full_messages_for(:description).first %></span>
     </div>
 
     <div class="field">
       <%= form.label :color %>
-      <%= form.text_field :color %>
+      <%= form.text_field :color, class: @product.errors[:color].any? ? 'field_with_errors' : 'regular-field' %>
+      <span class="error"><%= @product.errors.full_messages_for(:color).first %></span>
     </div>
 
     <div class="field">
       <%= form.label :size %>
-      <%= form.text_field :size %>
+      <%= form.text_field :size, class: @product.errors[:size].any? ? 'field_with_errors' : 'regular-field' %>
+      <span class="error"><%= @product.errors.full_messages_for(:size).first %></span>
     </div>
 
     <div class="field">
       <%= form.label :available %>
-      <%= form.check_box :available %>
+      <%= form.check_box :available, checked: @product.available?, class: @product.errors[:available].any? ? 'field_with_errors' : nil %>
+      <span class="error"><%= @product.errors.full_messages_for(:available).first %></span>
     </div>
 
-    <div class="field">
+     <div class="field">
       <%= form.label :product_images, 'Add images (JPG, PNG)' %>
-      <%= form.file_field :images, multiple: true, accept: 'image/jpeg,image/png' %>
+      <%= form.file_field :images, multiple: true, accept: 'image/jpeg,image/png', class: @product.errors[:images].any? ? 'field_with_errors' : nil, id: 'product_images' %>
+      <span class="error"><%= @product.errors.full_messages_for(:images).first %></span>
     </div>
 
-    <% if @product.images.attached? %>
-      <div class="field">
-        <p>Current Images:</p>
-        <% @product.images.each do |image| %>
-          <%= image_tag(image, class: 'thumb') %>
-          <%= check_box_tag "product[remove_images][]", image.id %>
-          <%= label_tag "product_remove_images_#{image.id}", 'Remove' %><br>
+    <div class="image-fields"></div>
+
+    <div class="image-fields">
+        <% if @product.images.attached? %>
+            <% @product.images.each do |image| %>
+            <div class="field">
+                <%= image_tag(image, class: 'thumb') %>
+                <%= check_box_tag "product[remove_images][]", image.id %>
+                <%= label_tag "product_remove_images_#{image.id}", 'Remove' %><br>
+            </div>
+            <% end %>
         <% end %>
-      </div>
-    <% end %><br>
+    </div>
     
     <div class="actions">
       <%= form.submit %>
-    </div>
+    </div><br>
+
+    <%= link_to admin_products_path, class: "btn btn-danger" do %>
+        Cancel
+    <% end %>
+
   <% end %>
 </div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    document.getElementById('product_images').addEventListener('change', function() {
+      if (this.files.length > 0) {
+        var imagesContainer = document.querySelector('.image-fields');
+        imagesContainer.innerHTML = '';
+        for (var i = 0; i < this.files.length; i++) {
+          var newImageField = document.createElement('div');
+          newImageField.classList.add('field');
+          newImageField.innerHTML = '<label>Add more images (JPG, PNG)</label><input type="file" name="product[images][]" multiple accept="image/jpeg,image/png">';
+          imagesContainer.appendChild(newImageField);
+        }
+      }
+    });
+  });
+</script>
