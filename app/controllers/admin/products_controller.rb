@@ -1,6 +1,6 @@
 class Admin::ProductsController < ApplicationController
   before_action :authenticate_admin!
-  before_action :set_product, only: [:show, :edit, :update, :destroy]
+  before_action :set_product, only: [:show, :edit, :update, :destroy, :toggle_availability]
 
   def index
     @products = Product.all()
@@ -58,16 +58,9 @@ class Admin::ProductsController < ApplicationController
     redirect_to admin_products_path
   end  
 
-  def make_unavailable
-    @product = Product.find(params[:id])
-    @product.update(available: false)
-    redirect_to admin_products_path
-  end
-
-  def make_available
-    @product = Product.find(params[:id])
-    @product.update(available: true)
-    redirect_to admin_products_path
+  def toggle_availability
+    @product.toggle!(:available)
+    redirect_to admin_products_path, notice: "Product availability toggled successfully."
   end
 
   private

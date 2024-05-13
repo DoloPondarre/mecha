@@ -1,4 +1,5 @@
-<h2>Available Products</h2>
+<h2>Products</h2><br>
+
 <div class="tab">
   <button class="tablinks active" onclick="openTab(event, 'available')">Available</button>
   <button class="tablinks" onclick="openTab(event, 'unavailable')">Unavailable</button>
@@ -13,55 +14,11 @@
 </div>
 
 <div id="available" class="tabcontent" style="display:block;">
-  <table class="admin-table">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Price</th>
-        <th colspan="4">Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% @available_products.each do |product| %>
-        <tr>
-          <td><%= product.name %></td>
-          <td><%= number_to_currency(product.price) %></td>
-          <td class="action-buttons d-flex align-items-center">
-            <%= button_to 'Show', admin_product_path(product), method: :get %>
-            <%= button_to 'Edit', edit_admin_product_path(product), method: :get %>
-            <%= button_to 'Make Unavailable', make_unavailable_admin_product_path(product), method: :patch %>
-            <%= button_to 'Delete', admin_product_path(product), method: :delete, data: { confirm: 'Are you sure?' } %>
-          </td>
-        </tr>
-      <% end %>
-    </tbody>
-  </table>
+  <%= render partial: 'product_table', locals: { products: @available_products, available: true } %>
 </div>
 
 <div id="unavailable" class="tabcontent">
-  <table class="admin-table">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Price</th>
-        <th colspan="4">Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% @unavailable_products.each do |product| %>
-        <tr>
-          <td><%= product.name %></td>
-          <td><%= number_to_currency(product.price) %></td>
-          <td class="action-buttons">
-            <%= button_to 'Show', admin_product_path(product), method: :get%>
-            <%= button_to 'Edit', edit_admin_product_path(product), method: :get %>
-            <%= button_to 'Make Available', make_available_admin_product_path(product), method: :patch %>
-            <%= button_to 'Delete', admin_product_path(product), method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-danger' %>
-          </td>
-        </tr>
-      <% end %>
-    </tbody>
-  </table>
+  <%= render partial: 'product_table', locals: { products: @unavailable_products, available: false } %>
 </div>
 
 <script>

@@ -33,7 +33,7 @@
 
     <div class="field">
       <%= form.label :available %>
-      <%= form.check_box :available, checked: @product.available?, class: @product.errors[:available].any? ? 'field_with_errors' : nil %>
+      <%= form.check_box :available, checked: @product.persisted? ? @product.available? : true, class: @product.errors[:available].any? ? 'field_with_errors' : nil %>
       <span class="error"><%= @product.errors.full_messages_for(:available).first %></span>
     </div>
 
@@ -42,8 +42,6 @@
       <%= form.file_field :images, multiple: true, accept: 'image/jpeg,image/png', class: @product.errors[:images].any? ? 'field_with_errors' : nil, id: 'product_images' %>
       <span class="error"><%= @product.errors.full_messages_for(:images).first %></span>
     </div>
-
-    <div class="image-fields"></div>
 
     <div class="image-fields">
         <% if @product.images.attached? %>
@@ -67,20 +65,3 @@
 
   <% end %>
 </div>
-
-<script>
-  document.addEventListener("DOMContentLoaded", function() {
-    document.getElementById('product_images').addEventListener('change', function() {
-      if (this.files.length > 0) {
-        var imagesContainer = document.querySelector('.image-fields');
-        imagesContainer.innerHTML = '';
-        for (var i = 0; i < this.files.length; i++) {
-          var newImageField = document.createElement('div');
-          newImageField.classList.add('field');
-          newImageField.innerHTML = '<label>Add more images (JPG, PNG)</label><input type="file" name="product[images][]" multiple accept="image/jpeg,image/png">';
-          imagesContainer.appendChild(newImageField);
-        }
-      }
-    });
-  });
-</script>

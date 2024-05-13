@@ -5,10 +5,7 @@ Rails.application.routes.draw do
   namespace :admin do
     root to: "products#index"
     resources :products do
-      member do
-        patch 'make_unavailable'
-        patch 'make_available'
-      end
+      patch 'toggle_availability', on: :member
     end
   end
 
