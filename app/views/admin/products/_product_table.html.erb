@@ -3,6 +3,9 @@
     <tr>
       <th>Name</th>
       <th>Price</th>
+      <% if available %>
+        <th>Featured</th>
+      <% end %>
       <th colspan="4">Actions</th>
     </tr>
   </thead>
@@ -11,10 +14,15 @@
       <tr>
         <td><%= product.name %></td>
         <td><%= number_to_currency(product.price) %></td>
+        <% if available %>
+          <td>
+            <%= button_to product.featured ? 'Unfeature' : 'Feature', toggle_featured_admin_product_path(product), method: :patch %>
+          </td>
+        <% end %>
         <td class="action-buttons d-flex align-items-center">
           <%= button_to 'Show', admin_product_path(product), method: :get %>
           <%= button_to 'Edit', edit_admin_product_path(product), method: :get %>
-          <%= button_to available ? 'Make Unavailable' : 'Make Available', toggle_availability_admin_product_path(product), method: :patch %>
+          <%= button_to product.available ? 'Make Unavailable' : 'Make Available', toggle_availability_admin_product_path(product), method: :patch %>
           <%= button_to 'Delete', admin_product_path(product), method: :delete, data: { confirm: 'Are you sure?' } %>
         </td>
       </tr>

@@ -7,6 +7,7 @@ class Product < ApplicationRecord
     validates :name, :price, :description, :color, :size, presence: true
     validates :price, numericality: { greater_than_or_equal_to: 0 }
     validate :validate_images
+    validate :featured_products_limit, if: -> { featured_changed?(to: true) }
 
     private
 
@@ -19,6 +20,12 @@ class Product < ApplicationRecord
         end
         else
         errors.add(:images, 'debes adjuntar al menos una imagen')
+        end
+    end
+
+    def featured_products_limit
+        if Product.where(featured: true).count >= 3
+          errors.add(:featured, "You can only have up to 3 featured products.")
         end
     end
 

@@ -6,6 +6,7 @@ Rails.application.routes.draw do
     root to: "products#index"
     resources :products do
       patch 'toggle_availability', on: :member
+      patch 'toggle_featured', on: :member
     end
   end
 

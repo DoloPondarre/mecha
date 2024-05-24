@@ -1,0 +1,54 @@
+.products-container {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    margin-top: 20px;
+  }
+
+  /* Modificar estilos para centrar la información y ajustar la disposición de las tarjetas */
+.product-card {
+    width: 30%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin-bottom: 20px;
+    text-align: center;
+    transition: background-color 0.3s ease-in-out;
+  }
+  
+  .product-card:hover {
+    background-color: #f8f9fa;
+  }
+  
+  .product-image {
+    margin-bottom: 20px; /* Espacio entre la imagen y la información */
+  }
+  
+  .product-info {
+    text-align: center; /* Centrar la información del producto */
+  }
+  
+  .product-action {
+    margin-top: 20px; /* Espacio entre la información y el botón */
+  }
+  
+  /* Modificar estilos para la disposición de las tarjetas en pantallas pequeñas */
+  @media (max-width: 768px) {
+    .products-container {
+      display: flex;
+      flex-direction: column; /* Mostrar las tarjetas una debajo de la otra */
+      align-items: center; /* Centrar las tarjetas horizontalmente */
+    }
+  
+    .product-card {
+      width: 80%; /* Ancho del 80% para adaptarse a pantallas pequeñas */
+    }
+  
+    .product-image {
+      margin-bottom: 0; /* Eliminar el margen inferior de la imagen */
+    }
+  
+    .product-info {
+      text-align: center; /* Centrar la información del producto */
+    }
+  }
+  
