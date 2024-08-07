@@ -1,0 +1,106 @@
+<div class="product-card rounded p-3">
+  <div class="product-image">
+    <div id="carouselExample<%= product.id %>" class="carousel slide" data-bs-ride="carousel">
+      <div class="carousel-inner">
+        <% product.images.each_with_index do |image, index| %>
+          <div class="carousel-item <%= 'active' if index == 0 %>">
+            <%= image_tag(url_for(image), class: 'd-block w-100 hover-shadow cursor', onclick: "openModal(#{product.id})") %>
+          </div>
+        <% end %>
+      </div>
+      <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample<%= product.id %>" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+      </button>
+      <button class="carousel-control-next" type="button" data-bs-target="#carouselExample<%= product.id %>" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+      </button>
+    </div>
+  </div>
+  <%= link_to product_path(product), class: "text-decoration-none text-dark" do %>
+    <div class="product-info text-center">
+      <h2><%= product.name %></h2>
+      <h3><%= number_to_currency(product.price) %></h3>
+      <p class="description"><%= product.description %></p>
+      <p class="color">Color: <%= product.color %></p>
+      <p class="size">Talle: <%= product.size %></p>
+    </div>
+  <% end %>
+</div>
+
+<!-- Modal Structure -->
+<div id="myModal<%= product.id %>" class="modal">
+  <span class="close cursor" onclick="closeModal(<%= product.id %>)">&times;</span>
+  <div class="modal-content">
+    <% product.images.each_with_index do |image, index| %>
+      <div class="mySlides" id="slide<%= index + 1 %>">
+        <div class="numbertext"><%= index + 1 %> / <%= product.images.count %></div>
+        <%= image_tag(url_for(image), style: "width:100%") %>
+      </div>
+    <% end %>
+
+    <a class="prev" onclick="plusSlides(-1, <%= product.id %>)">&#10094;</a>
+    <a class="next" onclick="plusSlides(1, <%= product.id %>)">&#10095;</a>
+
+    <div class="row">
+      <% product.images.each_with_index do |image, index| %>
+        <div class="column">
+          <%= image_tag(url_for(image), class: "demo cursor", style: "width:100%", onclick: "currentSlide(#{index + 1}, #{product.id})") %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<script>
+var slideIndex = {};
+
+function openModal(productId) {
+  var modal = document.getElementById("myModal" + productId);
+  if (modal) {
+    modal.style.display = "block";
+    slideIndex[productId] = 1; // Inicializa el índice del slide
+    showSlides(slideIndex[productId], productId);
+  }
+}
+
+function closeModal(productId) {
+  var modal = document.getElementById("myModal" + productId);
+  if (modal) {
+    modal.style.display = "none";
+  }
+}
+
+function plusSlides(n, productId) {
+  showSlides(slideIndex[productId] += n, productId);
+}
+
+function currentSlide(n, productId) {
+  showSlides(slideIndex[productId] = n, productId);
+}
+
+function showSlides(n, productId) {
+  var i;
+  var slides = document.querySelectorAll("#myModal" + productId + " .mySlides");
+  var dots = document.querySelectorAll("#myModal" + productId + " .demo");
+  var captionText = document.getElementById("caption" + productId);
+
+  if (n > slides.length) { slideIndex[productId] = 1; }
+  if (n < 1) { slideIndex[productId] = slides.length; }
+
+  for (i = 0; i < slides.length; i++) {
+    slides[i].style.display = "none";
+  }
+
+  for (i = 0; i < dots.length; i++) {
+    dots[i].className = dots[i].className.replace(" active", "");
+  }
+
+  slides[slideIndex[productId] - 1].style.display = "block";
+  dots[slideIndex[productId] - 1].className += " active";
+  if (captionText) {
+    captionText.innerHTML = dots[slideIndex[productId] - 1].alt;
+  }
+}
+</script>

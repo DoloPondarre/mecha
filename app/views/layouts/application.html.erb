@@ -4,6 +4,7 @@
   <title>Mecha</title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/css/lightbox.min.css" rel="stylesheet">
   <%= csrf_meta_tags %>
   <%= csp_meta_tag %>
 
@@ -22,10 +23,8 @@
   <header>
     <% if request.original_url.include?('admin') %>
       <div class="d-flex justify-content-between align-items-center w-100">
-
         <% if admin_signed_in? %>
           <h1><a href="<%= admin_root_path %>">Mecha del Poncho</a></h1>
-
           <h1><%= button_to "Log out", destroy_admin_session_path, method: :delete, class: "btn btn-dark" %></h1>
         <% else %>
           <h1><a href="<%= root_path %>">Mecha del Poncho</a></h1>
@@ -33,76 +32,54 @@
       </div>
     <% else %>
       <div class="d-flex justify-content-between align-items-center w-100">
-        <div class="w-25 d-flex align-items-center">            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="icon-search size-6" id="search-icon">
-              <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
-            </svg>
-          <input type="text" placeholder="Buscar..." class="form-control d-none w-100" id="search-input">
+        <div class="w-25 d-flex align-items-center">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="icon-search size-6" id="search-icon">
+            <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+          </svg>
+          
+          <form id="search-form" action="<%= search_products_path %>" method="GET" class="d-flex w-100">
+            <input type="text" name="query" placeholder="Buscar..." class="form-control d-none w-100" id="search-input" aria-label="Buscar...">
+            <button class="btn btn-outline-secondary d-none" type="submit">Buscar</button>
+          </form>
         </div>
         <div class="w-50 text-center">
           <h1><a href="<%= root_path %>">Mecha del Poncho</a></h1>
         </div>
-        <div class="w-25 text-end">
-          <div id="cart">
-            <div class="container-icon">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="icon-cart">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
-              </svg>
-
-              <div class="count-products">
-                <span id="contador-productos"><%= count_cart_items %></span>
-              </div>
-
-              <div class="container-cart-products <%='hidden-cart' if current_cart_items.empty? %>" onclick="event.stopPropagation()">
-                <% current_cart_items.each do |cart_item| %>
-                  <div class="cart-product" id="cart_product_<%= cart_item.product.id %>">
-                    <div class="info-cart-product">
-                      <span class="cantidad-producto-carrito">
-                        <div class="input-group">
-                          <input type="number" class="form-control" id="quantity_<%= cart_item.product.id %>" value="<%= cart_item.quantity %>" min="1" step="1" onchange="updateQuantity(<%= cart_item.product.id %>)">
-                        </div>
-                      </span>
-                      <p class="titulo-producto-carrito"><%= cart_item.product.name %></p>
-                      <span class="precio-producto-carrito"><%= number_to_currency(cart_item.product.price) %></span>
-                    </div>
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="icon-close" onclick="eliminarDelCarrito(<%= cart_item.product.id %>)" style="cursor: pointer;">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
-                    </svg>
-                  </div>
-                <% end %>
-
-                <div class="cart-total">
-                  <h3>Total</h3>
-                  <span class="total-pagar"><%= current_cart_total %></span>
-                </div>
-
-                <div class="button-order">
-                  <%= button_to 'Realizar Pedido', new_order_path, method: :get, id: 'realizar-pedido-button' %>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <div class="w-25"></div>
       </div>
     <% end %>
   </header>
 
   <% unless request.original_url.include?('admin') %>
-
-    <div>
+    <div class="options">
       <a href="<%= root_path %>">Inicio</a> |
       <a href="<%= products_path %>">Productos</a> |
-      <a href="#" id="contact-link">Contacto</a> |
-      <a href="#">Sobre Nosotros</a>
+      <a href="#" id="btn-abrir-modal">Contactos</a> 
     </div>
+
+    <dialog id="modal">
+      <h3>Contactos</h3>
+      <ul>
+        <img src="/images/Facebook_Logo.png" alt="Facebook Logo" class="contact-logo">
+        <a href="https://www.facebook.com/profile.php?id=100063713991183" target="_blank">Facebook</a>
+
+        <img src="/images/Instagram_Logo.png" alt="Instagram Logo" class="contact-logo">
+        <a href="https://www.instagram.com/mechadelponcho" target="_blank">Instagram</a>
+
+        <img src="/images/Whatsapp_Logo.png" alt="WhatsApp Logo" class="contact-logo">
+        <a href="https://wa.link/u4rier" target="_blank">WhatsApp</a>
+      </ul>
+      <button id="btn-cerrar-modal">Cerrar</button>
+    </dialog>
   <% end %>
 
   <% if admin_signed_in? && !current_page?(admin_root_path) && !current_page?(admin_products_path) %>
     <div class="d-flex align-items-center">
-        <%= link_to admin_products_path do %>
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" width="25" height="25" class="w-6 h-6 ms-4">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M9 15 3 9m0 0 6-6M3 9h12a6 6 0 0 1 0 12h-3" />
-          </svg>
-        <% end %>
+      <%= link_to admin_products_path do %>
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" width="25" height="25" class="w-6 h-6 ms-4">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 15 3 9m0 0 6-6M3 9h12a6 6 0 0 1 0 12h-3" />
+        </svg>
+      <% end %>
     </div> <br>
   <% end %>
 
@@ -111,129 +88,83 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/js/lightbox.min.js"></script>
 
 </body>
 </html>
 
-<!-- Scripts para el carrito -->
 <script>
-  function eliminarDelCarrito(cartItemId) {
-    fetch(`/cart_items/${cartItemId}`, {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
-      }
-    }).then(response => {
-      if (response.ok) {
-        return response.json(); // Convertir la respuesta a JSON
-      } else {
-        throw new Error('Error al eliminar el elemento del carrito');
-      }
-    }).then(data => {
-      // Recargar la página
-      location.reload();
-    }).catch(error => {
-      console.error('Error al eliminar el elemento del carrito:', error);
-    });
-  }
+  document.addEventListener('DOMContentLoaded', () => {
+  const searchIcon = document.getElementById('search-icon');
+  const searchInput = document.getElementById('search-input');
+  const searchForm = document.getElementById('search-form');
 
-  function updateQuantity(cartItemId) {
-    var input = document.getElementById('quantity_' + cartItemId);
-    var value = parseInt(input.value);
-    if (value < 1) {
-      value = 1; // No permitir cantidades menores a 1
-    }
+  searchIcon.addEventListener('click', () => {
+    searchInput.classList.toggle('d-none');
+    searchInput.focus();
+  });
 
-    // Enviar solicitud AJAX al servidor para actualizar la cantidad
-    fetch(`/cart_items/${cartItemId}/update_quantity?quantity=${value}`, {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
-      }
-    }).then(response => {
-      if (response.ok) {
-        return response.json(); // Convertir la respuesta a JSON
-      } else {
-        throw new Error('Error al actualizar la cantidad del cart_item');
-      }
-    }).then(data => {
-      // Actualizar el valor del input
-      input.value = value;
-      // Actualizar el contador de productos
-      var contadorProductos = document.getElementById('contador-productos');
-      contadorProductos.textContent = parseInt(contadorProductos.textContent) + (value - parseInt(input.getAttribute('value')));
-      // Actualizar el valor del atributo value del input
-      input.setAttribute('value', value);
-
-      // Actualizar el total del carrito
-      var totalPagar = document.querySelector('.total-pagar');
-      totalPagar.textContent = data.totalPagar;
-    }).catch(error => {
-      console.error('Error al actualizar la cantidad del cart_item:', error);
-    });
-  }
-
-  document.getElementById('realizar-pedido-button').addEventListener('click', function(event) {
-    if (<%= current_cart_items.any? %>) {
-      // Si hay productos en el carrito, permitir el envío del formulario
-      return true;
-    } else {
-      // Si no hay productos en el carrito, mostrar un mensaje de error
-      alert('Debe seleccionar un producto para realizar un pedido');
-      event.preventDefault(); // Evitar que se envíe el formulario
-      return false;
+  searchInput.addEventListener('input', () => {
+    const query = searchInput.value.trim();
+    if (query) {
+      fetchProducts(query);
     }
   });
 
+  searchForm.addEventListener('submit', (event) => {
+    event.preventDefault(); // Evita la redirección predeterminada del formulario
+    const query = searchInput.value.trim();
+    if (query) {
+      window.location.href = `/products/search?query=${encodeURIComponent(query)}`;
+    } else {
+      window.location.href = `/products`;
+    }
+  });
+});
+
+function fetchProducts(query = '') {
+  fetch(`/products/search?q=${query}`, {
+    headers: {
+      'Content-Type': 'application/json',
+      'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
+    }
+  })
+  .then(response => response.json())
+  .then(data => {
+    const productsContainer = document.getElementById('products-container');
+    if (productsContainer) {
+      productsContainer.innerHTML = data.html;
+    }
+  })
+  .catch(error => {
+    console.error('Error fetching products:', error);
+  });
+}
+</script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const btnAbrirModal = document.querySelector("#btn-abrir-modal");
+    const btnCerrarModal = document.querySelector("#btn-cerrar-modal");
+    const modal = document.querySelector("#modal");
+
+    btnAbrirModal.addEventListener("click", () => {
+      modal.showModal();
+    });
+
+    btnCerrarModal.addEventListener("click", () => {
+      modal.close();
+    });
+  });
+</script>
+
+<script>
   document.addEventListener('DOMContentLoaded', () => {
     const btnCart = document.querySelector('.icon-cart');
 
     btnCart.addEventListener('click', () => {
       const containerCartProducts = document.querySelector('.container-cart-products');
       containerCartProducts.classList.toggle('hidden-cart');
-    });
-  });
-</script>
-
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-    // Obtener el enlace de contacto
-    var contactLink = document.getElementById('contact-link');
-
-    // Agregar un evento de clic al enlace
-    contactLink.addEventListener('click', function(event) {
-      // Prevenir el comportamiento predeterminado del enlace
-      event.preventDefault();
-
-      // Abrir una ventana emergente con los enlaces a las redes sociales
-      var popupWindow = window.open('', 'contact-popup', 'width=600,height=400');
-
-      // Crear el contenido HTML de la ventana emergente
-      var popupContent = `
-        <h3>Redes Sociales</h3>
-        <ul>
-          <li><a href="https://www.facebook.com/profile.php?id=100063713991183" target="_blank">Facebook</a></li>
-          <li><a href="https://www.instagram.com/mechadelponcho" target="_blank">Instagram</a></li>
-          <li><a href="https://wa.link/u4rier" target="_blank">WhatsApp</a></li>
-        </ul>
-      `;
-
-      // Escribir el contenido HTML en la ventana emergente
-      popupWindow.document.write(popupContent);
-    });
-  });
-</script>
-
-<script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const searchIcon = document.getElementById('search-icon');
-    const searchInput = document.getElementById('search-input');
-
-    searchIcon.addEventListener('click', () => {
-      searchInput.classList.toggle('d-none');
-      searchInput.focus();
     });
   });
 </script>

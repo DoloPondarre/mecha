@@ -25,9 +25,9 @@ Things you may want to cover:
 
 # Mecha del Poncho - Documentación del Proyecto
 
-# Sistema de Gestión de Pedidos
+# Catálogo Online
 
-Esta aplicación es un sistema de gestión de pedidos diseñado para manejar los productos de un negocio y permitir a los usuarios realizar pedidos.
+Esta aplicación es un catálogo online diseñado para manejar los productos de un negocio y permitir a los usuarios ver características y fotos de los productos cargados.
 
 ## Funcionalidades del Administrador
 
@@ -37,6 +37,7 @@ El Administrador puede iniciar sesión y administrar los productos disponibles e
 - Agregar nuevos productos.
 - Editar los detalles de los productos existentes.
 - Marcar productos como disponibles o no disponibles.
+- Marcar hasta 3 productos como "Feature" para que se muestren en el home.
 - Eliminar productos.
 
 ## Funcionalidades del Visitante
@@ -45,10 +46,7 @@ Los visitantes de la página pueden realizar las siguientes acciones:
 
 - Ver la lista de productos disponibles.
 - Ver detalles de un producto específico.
-- Agregar productos al carrito de pedidos.
-- Generar un pedido con los productos seleccionados.
-- Proporcionar datos de contacto y envío para el pedido.
-- Enviar un mensaje de WhatsApp al número del negocio con la información del pedido.
+- Buscar un producto por su nombre, descripción o color.
 
 ## Tecnologías Utilizadas
 

@@ -12,12 +12,15 @@ Rails.application.routes.draw do
 
   root to: 'home#index'
   
-  resources :products, only: [:index, :show]
+  resources :products, only: [:index, :show] do
+    collection do
+      get 'search', to: 'products#search'
+    end
+  end
   resource :cart, only: [:show, :create]
   resources :orders, only: [:new, :create]
 
-  get 'orders/:id/whatsapp', to: 'orders#whatsapp', as: 'order_whatsapp'
-
+  # get 'orders/:id/whatsapp', to: 'orders#whatsapp', as: 'order_whatsapp'
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.

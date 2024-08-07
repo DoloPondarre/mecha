@@ -1,0 +1,9 @@
+<div class="products-container">
+  <% if products.any? %>
+    <% products.each do |product| %>
+      <%= render partial: 'products/product', locals: { product: product } %>
+    <% end %>
+  <% else %>
+    <p>No se encontraron productos relacionados con su búsqueda.</p>
+  <% end %>
+</div>
