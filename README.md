@@ -62,7 +62,7 @@ Para instalar y ejecutar esta aplicación en tu máquina local, sigue estos paso
 1. Clona este repositorio en tu máquina local.
 
     ```bash
-    git clone <URL_DEL_REPOSITORIO>
+    git clone <[URL_DEL_REPOSITORIO](https://github.com/DoloPondarre/mecha.git)>
     ```
 
 2. Instala las dependencias de Ruby usando Bundler.
